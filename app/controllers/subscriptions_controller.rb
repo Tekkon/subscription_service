@@ -1,6 +1,7 @@
 class SubscriptionsController < ApplicationController
   def index
-    subscription = user.subscriptions.active.first || user.subscriptions.paused.first
+    subscription = SubscriptionSearcher.new(user).call
+
     if subscription
       uri = URI(subscription_path(subscription))
       uri.query = request.query_string.presence

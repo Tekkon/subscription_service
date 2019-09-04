@@ -1,11 +1,11 @@
-class SubscriptionService
+class SubscriptionSearcher
   attr_reader :user
 
   def initialize(user)
     @user = user
   end
 
-  def subscription
+  def call
     user.subscriptions.active.first || user.subscriptions.paused.first
   end
 end
