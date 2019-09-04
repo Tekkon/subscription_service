@@ -153,6 +153,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord
   byebug
   coffee-rails (~> 4.1.0)
   dotenv-rails
