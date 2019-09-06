@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
   def index
-    redirect_to SubscriptionUrlResolver.new(user, request).call
+    redirect_to SubscriptionUrlResolver.call(user, request)
   end
 end

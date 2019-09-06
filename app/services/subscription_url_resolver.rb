@@ -1,20 +1,23 @@
 class SubscriptionUrlResolver
-  attr_reader :user, :request
+  def self.call(user, request)
+    active_subscription = user.subscriptions.active.first || user.subscriptions.paused.first
 
-  def initialize(user, request)
-    @user = user
-    @request = request
+    if active_subscription
+      uri_string(:subscription_path, request, active_subscription)
+    else
+      url_string(:root_path)
+    end
   end
 
-  def call
-    subscription = user.subscriptions.active.first || user.subscriptions.paused.first
+  private
 
-    if subscription
-      uri = URI(Rails.application.routes.url_helpers.subscription_path(subscription))
-      uri.query = request.query_string.presence
-      uri.to_s
-    else
-      Rails.application.routes.url_helpers.root_path
-    end
+  def self.uri_string(path, request, *params)
+    uri = URI(url_string(path, params))
+    uri.query = request.query_string.presence
+    uri.to_s
+  end
+
+  def self.url_string(path, *params)
+    Rails.application.routes.url_helpers.send(path, params)
   end
 end
