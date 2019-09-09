@@ -2,32 +2,37 @@ require_relative '../test_helper'
 require_relative '../../app/services/subscription_url_resolver'
 require_relative '../../app/models/user'
 require_relative '../../app/models/subscription'
+require_relative 'subscription_url_resolver_helper'
 
 describe SubscriptionUrlResolver do
-  let(:user) { User.create(name: 'User', email: 'user@gmail.com') }
+  include SubscriptionUrlResolverHelper
+
+  let(:user) { create(:user) }
   let(:request) { MiniTest::Mock.new }
 
-  before do
-    4.times do
-      request.expect :query_string, "param1=1"
-    end
-  end
-
   describe '#call' do
-    it 'returns an active subscription url if it exists' do
-      subscription = Subscription.create(user_id: user.id, active: true)
-      Subscription.create(user_id: user.id, active: false)
-      assert_equal SubscriptionUrlResolver.call(user, request), "#{URI(Rails.application.routes.url_helpers.subscription_path(subscription)).to_s}?#{request.query_string}"
+    describe 'a subscription exists' do
+      before do
+        create(:subscription, :not_active, user: user)
+      end
+
+      describe 'an active subscription exists' do
+        it 'returns an active subscription url' do
+          url_equal_test subscription_path_url(create(:subscription, :active, user: user))
+        end
+      end
+
+      describe 'an active subscription does not exists' do
+        it 'returns a paused subscription url' do
+          url_equal_test subscription_path_url(create(:subscription, :paused, user: user))
+        end
+      end
     end
 
-    it 'returns a paused subscription url if active one is not exists' do
-      subscription = Subscription.create(user_id: user.id, active: false, paused: true)
-      Subscription.create(user_id: user.id, active: false)
-      assert_equal SubscriptionUrlResolver.call(user, request), "#{URI(Rails.application.routes.url_helpers.subscription_path(subscription)).to_s}?#{request.query_string}"
-    end
-
-    it 'returns root url if there are no subscriptions' do
-      assert_equal SubscriptionUrlResolver.call(user, request), Rails.application.routes.url_helpers.root_path
+    describe 'there are no subscriptions' do
+      it 'returns root url' do
+        url_equal_test url_helpers.root_path
+      end
     end
   end
 end

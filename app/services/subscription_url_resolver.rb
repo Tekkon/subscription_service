@@ -23,16 +23,16 @@ class SubscriptionUrlResolver
   private
 
   def subscription_path(subscription)
-    URI(uri_helpers.subscription_path(subscription)).tap do |uri|
+    URI(url_helpers.subscription_path(subscription)).tap do |uri|
       uri.query = request.query_string.presence
     end.to_s
   end
 
   def root_path
-    uri_helpers.root_path
+    url_helpers.root_path
   end
 
-  def uri_helpers
+  def url_helpers
     Rails.application.routes.url_helpers
   end
 end

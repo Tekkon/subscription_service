@@ -1,12 +1,10 @@
-module ServicesSpecHelper
-  extend ActiveSupport::Concern
-
+module SubscriptionUrlResolverHelper
   def url_equal_test(expected_url)
     set_expectations
     assert_equal SubscriptionUrlResolver.call(user, request), expected_url
   end
 
-  def subscription_path_uri(subscription)
+  def subscription_path_url(subscription)
     set_expectations
     "#{URI(url_helpers.subscription_path(subscription)).to_s}?#{request.query_string}"
   end
