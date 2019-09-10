@@ -18,13 +18,13 @@ describe SubscriptionUrlResolver do
 
       describe 'an active subscription exists' do
         it 'returns an active subscription url' do
-          url_equal_test subscription_path_url(create(:subscription, :active, user: user))
+          url_equal_test subscription_path(create(:subscription, :active, user: user))
         end
       end
 
       describe 'an active subscription does not exists' do
         it 'returns a paused subscription url' do
-          url_equal_test subscription_path_url(create(:subscription, :paused, user: user))
+          url_equal_test subscription_path(create(:subscription, :paused, user: user))
         end
       end
     end

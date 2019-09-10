@@ -4,7 +4,7 @@ module SubscriptionUrlResolverHelper
     assert_equal SubscriptionUrlResolver.call(user, request), expected_url
   end
 
-  def subscription_path_url(subscription)
+  def subscription_path(subscription)
     set_expectations
     "#{URI(url_helpers.subscription_path(subscription)).to_s}?#{request.query_string}"
   end
